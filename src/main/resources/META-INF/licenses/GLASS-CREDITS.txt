@@ -1,0 +1,8 @@
+Glass UI reference: Walksy/WalksyLib, MIT, copyright (c) 2026 Walksy.
+Reference commit: 021bb5e1d58f6575f40fcd34aac6f6eb24ae15ab
+Examined 26.3 version sources and shared liquid_glass_gui.fsh; 1.21.11 GPU adapter also reviewed.
+https://github.com/Walksy/WalksyLib
+The dwmirLib renderer is a compact independent single-snapshot implementation, using the rounded SDF/rim-light approach rather than the complete WalksyLib render engine.
+WalksyLib credits ReGlass by RedxAx as the foundation for its Liquid Glass rendering. No ReGlass source was copied into this implementation.
+
+GitHub icon: WalksyLib assets/walksylib/gui/icon/github.png, used under the included MIT license.

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "dwmirlib",
+  "version": "${version}",
+  "name": "dwmirLib",
+  "icon": "icon.png",
+  "description": "Shared client library and settings hub for dwmir mods.",
+  "authors": [
+    "dwmir"
+  ],
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "dev.dwmir.lib.DwmirLib"
+    ],
+    "modmenu": [
+      "dev.dwmir.lib.MenuIntegration"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.18.4",
+    "minecraft": "~1.21.11",
+    "java": ">=21"
+  },
+  "suggests": {
+    "modmenu": ">=17.0.1"
+  },
+  "mixins": [
+    "dwmirlib.mixins.json"
+  ],
+  "license": "MIT"
+}

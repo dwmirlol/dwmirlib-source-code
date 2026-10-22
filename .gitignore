@@ -1,0 +1,11 @@
+.gradle/
+build/
+run/
+run-test/
+suite-libs/
+.idea/
+*.iml
+.vscode/
+local.properties
+.env
+.env.*

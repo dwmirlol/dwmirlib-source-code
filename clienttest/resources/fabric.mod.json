@@ -1,0 +1,10 @@
+{"schemaVersion": 1, "id": "dwmirlib_test", "version": "1.0.0", "name": "Studio Controls", "description": "UI verification fixture. Never included in the release.", "environment": "client", "entrypoints": {"fabric-client-gametest": ["dev.dwmir.lib.R13Checks"]}}
+
+
+
+
+
+
+
+
+

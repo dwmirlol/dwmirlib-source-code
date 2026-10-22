@@ -1,0 +1,3 @@
+Monochrome vector icons from Simple Icons (CC0).
+https://github.com/simple-icons/simple-icons
+Converted from SVG paths without generated artwork.

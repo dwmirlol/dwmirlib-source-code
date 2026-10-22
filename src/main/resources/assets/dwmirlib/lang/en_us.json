@@ -1,0 +1,19 @@
+{
+  "dwmirlib.title": "dwmirLib",
+  "dwmirlib.subtitle": "Manage your mods and their settings.",
+  "dwmirlib.search": "Find a mod...",
+  "dwmirlib.empty": "Installed dwmir mods will appear here, ready to configure.",
+  "dwmirlib.no_results": "No matching mods.",
+  "dwmirlib.no_settings": "No settings yet",
+  "dwmirlib.open_settings": "Configure",
+  "dwmirlib.failed": "Could not open settings. See the game log.",
+  "dwmirlib.count": "%s mods",
+  "dwmirlib.eyebrow": "COLLECTION",
+  "dwmirlib.collection": "Your mods",
+  "dwmirlib.configurable": "Settings",
+  "dwmirlib.all": "Mods",
+  "dwmirlib.settings_short": "Setup",
+  "dwmirlib.workspace": "LIBRARY",
+  "dwmirlib.empty_title": "Make room for your mods.",
+  "dwmirlib.search_hint": "Try a different name or clear your search."
+}

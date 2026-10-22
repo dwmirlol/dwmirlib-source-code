@@ -1,0 +1,13 @@
+# dwmirLib 1.0.0
+
+Fabric client library and settings hub for Minecraft 1.21.11, Java 21. The integrated package uses Fabric Loader 0.19.5+, Fabric API, Mod Menu, Cloth Config and YACL.
+
+A single welcome screen appears on first world/server entry. Preferences and acknowledgment are stored in config/dwmirlib.json. Module settings share a responsive, pixel-aligned canvas, bounded tooltips and the selected theme. The sidebar shows the active session name and skin.
+
+To integrate a mod, declare dwmirlib >=1.0.0 in fabric.mod.json, compile against libs/dwmirlib-1.0.0.jar using Loom modImplementation, implement DwmirModule, and register its dwmirlib entrypoint. Do not embed the library when a separate installation is required.
+
+Build with JDK 21: gradlew.bat build. The release library JAR is build/libs/dwmirlib-1.0.0.jar. Combined client tests need all seven integrated JARs in suite-libs, named crossbow.jar, shield.jar, inventory.jar, sprinter.jar, countit.jar, glowing.jar and highlighter.jar. Run gradlew.bat runClientTest -PclientTest -PintegrationSuite -PinventorySuite -PsprinterSuite -PcountitSuite -Pr10Suite. R13Checks covers overlap rendering, color parity, HUD appearance, animated scrolling, profiles, native inventory tooltips and the shared settings. Test fixtures are excluded from release JARs.
+
+UI performance: cached native icon images, fixed item scale during entry animation, cached cursor/petal textures and one quad per preview stroke. Shield GUI item rendering is limited to the settings screen at a bounded resolution.
+
+Module icons are transparent 1024px exports of the vanilla 1.21.11 item renderer, with original models and textures. Vanilla texture pixels are retained; the offscreen model rasterization resolution is raised for export only. Native game rendering is used for player skins and gameplay previews; social buttons link to dwmirlol accounts. The glass renderer is independently implemented for 1.21.11 after reviewing the MIT-licensed WalksyLib 26.3 approach. Credits and its MIT notice are included under META-INF/licenses. Five themes include Quartz and illustrated Sakura. The hub has one Your mods tab and a Socials section including GitHub. Shared button press/hover and slider motion preserve underlying settings values. Module cards draw their PNGs with linear sampling and inset padding. Shared color controls use ColorPickerScreen; banner colors map to the nearest vanilla dye. R3Checks covers picker apply/cancel, inventory draft persistence, themes, Mod Menu icons and FPS. GlassLifecycleChecks covers resize, resource reload and HUD editor rendering.

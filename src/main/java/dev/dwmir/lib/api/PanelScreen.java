@@ -1,0 +1,40 @@
+package dev.dwmir.lib.api;
+import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.*;
+import net.minecraft.text.Text;
+import java.util.*;import java.util.function.*;
+/** Shared paged settings with clipped content and native text metrics. */
+public abstract class PanelScreen extends Screen {
+ protected final Screen parent;protected int page,x,y,w,h,lx,ly,lw,lh,cursor,previewX,previewWidth;private double scroll;private final SmoothScroll scrollMotion=new SmoothScroll();
+ private final java.util.List<Placed> rows=new ArrayList<>();private record Placed(ClickableWidget widget,int offset){}
+ protected PanelScreen(Screen parent,String name){super(net.minecraft.text.Text.literal(name));this.parent=parent;}
+ protected boolean clickPanel(Click e,boolean twice){return false;}protected boolean dragPanel(Click e,double dx,double dy){return false;}protected boolean releasePanel(Click e){return false;}
+ protected final void refreshControls(){init();}
+ protected abstract String[] pages();protected abstract void populate();protected abstract void save();
+ protected void icon(DrawContext c,int x,int y){}
+ protected void preview(DrawContext c,int x,int y,int w,int h,float dt){}
+ @Override protected void init(){clearChildren();rows.clear();w=Math.min(750,width-28);h=Math.min(460,height-28);x=(width-w)/2;y=(height-h)/2;lx=x+142;ly=y+66;previewWidth=w>=650?174:0;lw=w-160-(previewWidth==0?0:previewWidth+12);lh=h-116;previewX=lx+lw+12;cursor=0;
+  String[] names=pages();for(int i=0;i<names.length;i++){final int p=i;addDrawableChild(new Action(x+12,y+70+i*36,116,28,()->names[p],()->{page=p;scroll=0;scrollMotion.jump(0);init();},page==i));}
+  addDrawableChild(new Action(x+w-98,y+h-37,82,25,()->"Done",this::close,false));populate();scroll=Math.clamp(scroll,0,Math.max(0,cursor-lh));scrollMotion.jump(scroll);position();}
+ protected void action(Supplier<String> label,Runnable run){put(new Action(lx,0,lw,30,label,run,false),38);}
+ protected void toggle(String label,BooleanSupplier get,Runnable change){action(()->label+": "+(get.getAsBoolean()?"On":"Off"),()->{change.run();save();});}
+ protected void choice(String label,String[] values,IntSupplier get,IntConsumer set){action(()->label+": "+values[Math.floorMod(get.getAsInt(),values.length)],()->{set.accept((get.getAsInt()+1)%values.length);save();});}
+ protected void color(String label,IntSupplier get,IntConsumer set){put(new ColorAction(lx,0,lw,label,get,set),38);}
+ private final class ColorAction extends ButtonWidget {final String label;final IntSupplier get;ColorAction(int x,int y,int w,String label,IntSupplier get,IntConsumer set){super(x,y,w,30,net.minecraft.text.Text.literal(label),b->client.setScreen(new ColorPickerScreen(PanelScreen.this,label,get.getAsInt(),rgb->{set.accept(rgb);save();})),DEFAULT_NARRATION_SUPPLIER);this.label=label;this.get=get;}protected void drawIcon(DrawContext c,int mx,int my,float dt){GlassUi.button(c,this,getX(),getY(),getWidth(),getHeight(),isHovered()||isFocused(),false);GlassUi.label(c,label,getX()+12,getY(),getWidth()-66,getHeight(),GlassUi.TEXT);GlassUi.rawRound(c,getX()+getWidth()-45,getY()+6,32,18,7,0xff000000|get.getAsInt());}}
+ protected void input(String label,Supplier<String> get,Consumer<String> set){var f=new TextFieldWidget(textRenderer,lx+8,0,lw-16,22,net.minecraft.text.Text.literal(label));f.setMaxLength(1024);f.setText(get.get());f.setPlaceholder(net.minecraft.text.Text.literal(label));f.setChangedListener(set);put(f,32);}
+ protected void number(String label,double min,double max,double step,DoubleSupplier get,DoubleConsumer set){put(new Number(lx,0,lw,label,min,max,step,get,set),46);}
+ protected final void put(ClickableWidget widget,int height){rows.add(new Placed(addDrawableChild(widget),cursor));cursor+=height;}
+ private void position(){for(var p:rows)p.widget.setY(ly+p.offset-(int)scroll);}
+ @Override public void renderBackground(DrawContext c,int mx,int my,float dt){}
+ @Override public void render(DrawContext c,int mx,int my,float dt){scroll=scrollMotion.update(Math.max(0,cursor-lh));position();GlassUi.round(c,x,y,w,h,28,GlassUi.PANEL);GlassUi.round(c,x+1,y+1,130,h-2,24,0x18000000);icon(c,x+49,y+16);c.drawText(textRenderer,textRenderer.trimToWidth(getTitle().getString(),w-168),lx,y+21,GlassUi.TEXT,false);c.drawText(textRenderer,pages()[page],lx,y+43,GlassUi.MUTED,false);
+  c.enableScissor(lx-4,ly-3,lx+lw+4,ly+lh+3);for(var p:rows)if(p.widget.getY()+p.widget.getHeight()>ly&&p.widget.getY()<ly+lh)p.widget.render(c,mx,my,dt);c.disableScissor();for(var child:children())if(child instanceof ClickableWidget widget&&rows.stream().noneMatch(p->p.widget==widget))widget.render(c,mx,my,dt);
+  if(cursor>lh){int thumb=Math.max(18,lh*lh/cursor);GlassUi.rawRound(c,lx+lw+6,ly+(int)((lh-thumb)*scroll/(cursor-lh)),2,thumb,1,0x70ffffff);}if(previewWidth>0){GlassUi.round(c,previewX,ly,previewWidth,lh,20,0x20ffffff);GlassUi.label(c,"LIVE PREVIEW",previewX+8,ly+8,previewWidth-16,18,GlassUi.MUTED);c.enableScissor(previewX+5,ly+30,previewX+previewWidth-5,ly+lh-5);preview(c,previewX+8,ly+32,previewWidth-16,lh-40,dt);c.disableScissor();}c.drawText(textRenderer,"dwmirLib / 1.0.0",lx,y+h-27,GlassUi.MUTED,false);}
+ @Override public boolean mouseClicked(Click e,boolean twice){if(clickPanel(e,twice))return true;for(var child:children())if(child instanceof ClickableWidget widget){boolean row=rows.stream().anyMatch(p->p.widget==widget);if(row&&(e.y()<ly||e.y()>ly+lh))continue;if(widget.mouseClicked(e,twice)){setFocused(widget);setDragging(e.button()==0);return true;}}return false;}
+ @Override public boolean mouseDragged(Click e,double dx,double dy){return dragPanel(e,dx,dy)||super.mouseDragged(e,dx,dy);}
+ @Override public boolean mouseReleased(Click e){boolean result=releasePanel(e)||super.mouseReleased(e);save();return result;}
+ @Override public boolean mouseScrolled(double mx,double my,double horizontal,double vertical){if(mx>=lx&&mx<=lx+lw&&my>=ly&&my<=ly+lh){scrollMotion.by(-vertical*34,Math.max(0,cursor-lh));return true;}return false;}
+ @Override public boolean shouldPause(){return false;}@Override public void close(){save();client.setScreen(parent);}
+ private final class Action extends ButtonWidget {final Supplier<String> label;final boolean selected;Action(int x,int y,int w,int h,Supplier<String> label,Runnable action,boolean selected){super(x,y,w,h,net.minecraft.text.Text.literal(label.get()),b->{GlassUi.press(b);action.run();},DEFAULT_NARRATION_SUPPLIER);this.label=label;this.selected=selected;}protected void drawIcon(DrawContext c,int mx,int my,float dt){setMessage(net.minecraft.text.Text.literal(label.get()));GlassUi.button(c,this,getX(),getY(),getWidth(),getHeight(),isHovered()||isFocused(),selected);GlassUi.label(c,label.get(),getX()+12,getY(),getWidth()-24,getHeight(),GlassUi.TEXT);}}
+ private final class Number extends SliderWidget {final String label;final double min,max,step;final DoubleConsumer setter;double actual(){return Math.clamp(Math.round((min+value*(max-min))/step)*step,min,max);}Number(int x,int y,int w,String label,double min,double max,double step,DoubleSupplier get,DoubleConsumer set){super(x,y,w,38,net.minecraft.text.Text.empty(),Math.clamp((get.getAsDouble()-min)/(max-min),0,1));this.label=label;this.min=min;this.max=max;this.step=step;setter=set;updateMessage();}protected void updateMessage(){setMessage(net.minecraft.text.Text.literal(label==null?"":label));}protected void applyValue(){setter.accept(actual());}private void update(Click e){setValue((e.x()-getX()-12)/(getWidth()-24.));}public void onClick(Click e,boolean twice){update(e);}protected void onDrag(Click e,double dx,double dy){update(e);}public void renderWidget(DrawContext c,int mx,int my,float dt){GlassUi.round(c,getX(),getY(),getWidth(),getHeight(),16,GlassUi.ROW);String result=String.format(java.util.Locale.ROOT,"%.2f",actual());GlassUi.label(c,label,getX()+12,getY()+3,getWidth()-90,14,GlassUi.TEXT);GlassUi.label(c,result,getX()+getWidth()-70,getY()+3,58,14,GlassUi.MUTED);GlassUi.slider(c,this,getX()+12,getY()+27,getWidth()-24,GlassUi.animate(this,value),isHovered()||isFocused());}}
+}

@@ -1,0 +1,19 @@
+{
+  "dwmirlib.title": "dwmirLib",
+  "dwmirlib.subtitle": "Modlarını ve ayarlarını yönet.",
+  "dwmirlib.search": "Bir mod ara...",
+  "dwmirlib.empty": "Yüklediğin dwmir modları, ayarlarıyla birlikte burada görünecek.",
+  "dwmirlib.no_results": "Eşleşen mod bulunamadı.",
+  "dwmirlib.no_settings": "Henüz ayar yok",
+  "dwmirlib.open_settings": "Ayarları aç",
+  "dwmirlib.failed": "Ayarlar açılamadı. Oyun günlüğünü kontrol et.",
+  "dwmirlib.count": "%s mod",
+  "dwmirlib.eyebrow": "KOLEKSİYON",
+  "dwmirlib.collection": "Modların",
+  "dwmirlib.configurable": "Ayarlar",
+  "dwmirlib.all": "Modlar",
+  "dwmirlib.settings_short": "Ayarlar",
+  "dwmirlib.workspace": "ARŞİV",
+  "dwmirlib.empty_title": "Modların için bir yer.",
+  "dwmirlib.search_hint": "Başka bir isim dene veya aramayı temizle."
+}

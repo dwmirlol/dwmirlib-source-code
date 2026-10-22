@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "dev.dwmir.lib.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "ScreenRouteMixin",
+    "GlassContextMixin",
+    "PipelineRegistry",
+    "ThemeTextMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "refmap": "dwmirlib.refmap.json"
+}
